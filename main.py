@@ -109,10 +109,10 @@ def developement_image():
 
 
 def developement_video():
-	# videoDataPath = "./data/videos_info/pedestrian.json"
-	videoDataPath = "./data/videos_info/taiwan_pedestrians.json"
+	videoDataPath = "./data/videos_info/pedestrian.json"
+	# videoDataPath = "./data/videos_info/taiwan_pedestrians.json"
 	videoData = json.loads(open(videoDataPath).read())
-
+	wf = videoData["windowFactor"]
 	pathToVideo = videoData["filePath"]
 
 	cap = cv2.VideoCapture(pathToVideo)
@@ -121,8 +121,14 @@ def developement_video():
 		if not ret: break
 		frame = run_for_image(frame, videoData)
 		# k = display_image(frame, FRM=1)	
-		# cv2.imshow(	"Result", cv2.resize(frame, (frame.shape[1]//2, frame.shape[0]//2)))
-		cv2.imshow(	"Result", cv2.resize(frame, (frame.shape[1], frame.shape[0])))
+		cv2.imshow(	
+			"Result", 
+			cv2.resize(
+				frame, (
+					int(wf*frame.shape[1]), int(wf*frame.shape[0])
+				)
+			)
+		)
 		k = cv2.waitKey(1) & 0xff
 		if k == 27:
 			 break
