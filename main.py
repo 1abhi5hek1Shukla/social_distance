@@ -98,7 +98,7 @@ def run_for_image(image, videoData):
 	matInv = getWarpingMatrix(videoData["warpedPoint"], videoData["normalPoint"])
 	unWarpedImage = warpPerspective(warpedImage, matInv, videoData["normalShape"])
 
-	return unWarpedImage
+	return warpedImage, unWarpedImage
 
 def developement_image():
 	# Image Path and readin
@@ -109,8 +109,13 @@ def developement_image():
 
 
 def developement_video():
+	
+	# Video Datas
 	videoDataPath = "./data/videos_info/pedestrian.json"
 	# videoDataPath = "./data/videos_info/taiwan_pedestrians.json"
+	# videoDataPath = "./data/videos_info/ip_cam_video.json"
+
+
 	videoData = json.loads(open(videoDataPath).read())
 	wf = videoData["windowFactor"]
 	pathToVideo = videoData["filePath"]
@@ -119,13 +124,21 @@ def developement_video():
 	while cap.isOpened():
 		ret, frame = cap.read()
 		if not ret: break
-		frame = run_for_image(frame, videoData)
+		warpedFrame, frame = run_for_image(frame, videoData)
 		# k = display_image(frame, FRM=1)	
 		cv2.imshow(	
 			"Result", 
 			cv2.resize(
 				frame, (
 					int(wf*frame.shape[1]), int(wf*frame.shape[0])
+				)
+			)
+		)
+		cv2.imshow(	
+			"Result Warped", 
+			cv2.resize(
+				warpedFrame, (
+					int(wf*warpedFrame.shape[1]), int(wf*warpedFrame.shape[0])
 				)
 			)
 		)
